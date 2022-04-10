@@ -1,27 +1,14 @@
 import warnings
 import uuid
-from functools import wraps
-from collections import namedtuple
 from rdkit import Chem, Geometry
 from rdkit.Chem import AllChem, Draw
-from .utils import sequential_palette, get_auto_palette
+from .utils import (Substitution, requires_config,
+                    sequential_palette, get_auto_palette)
 try:
     from IPython.display import display_svg, display_html, Javascript
     from ipywidgets import ColorPicker
 except ImportError:
     pass
-
-
-Substitution = namedtuple("Substitution", ["content", "start", "end"])
-
-
-def requires_config(method):
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        if not self._is_configured:
-            self.configure()
-        return method(self, *args, **kwargs)
-    return wrapper
 
 
 class MolHighlighter:
