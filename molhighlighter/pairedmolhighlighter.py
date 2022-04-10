@@ -1,18 +1,18 @@
 import warnings
 import uuid
 from .molhighlighter import Substitution, MolHighlighter
-from .highlight import LabelledHighlight
+from .highlight import PairedHighlight
 try:
     from IPython.display import display_html, Javascript
 except ImportError:
     pass
 
 
-class LabelledMolHighlighter(MolHighlighter):
+class PairedMolHighlighter(MolHighlighter):
     """Highlights substructures of a molecule with substrings of it's
     corresponding label
     """
-    highlight_cls = LabelledHighlight
+    highlight_cls = PairedHighlight
 
     def __init__(self, label, mol, highlights=None):
         super().__init__(mol=mol, highlights=highlights)
@@ -27,7 +27,7 @@ class LabelledMolHighlighter(MolHighlighter):
     
     def hint(self):
         """Displays the molecule annotated with atom indices, its label,
-        and a color picker to help setting up the LabelledHighlight objects"""
+        and a color picker to help setting up the PairedHighlight objects"""
         print(self.label)
         return super().hint()
 
@@ -49,7 +49,7 @@ class LabelledMolHighlighter(MolHighlighter):
 
     def generate_label(self):
         """Generate an HTML string of the label with highlights"""
-        # sort LabelledHighlights with longer (more specific) substrings first
+        # sort PairedHighlights with longer (more specific) substrings first
         highlights = sorted(self.highlights, reverse=True,
                             key=lambda highlight: len(highlight.substring))
         substitutions, starts = [], []

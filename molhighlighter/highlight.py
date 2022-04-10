@@ -37,8 +37,7 @@ class Highlight:
         return tuple(int(color[i:i+2], 16)/255 for i in (0, 2, 4))
 
 
-class LabelledHighlight(Highlight):
-    def __init__(self, substring, indices, color, fill_ring=False):
+class PairedHighlight(Highlight):
         super().__init__(indices=indices, color=color, fill_ring=fill_ring)
         self.substring = substring
 
