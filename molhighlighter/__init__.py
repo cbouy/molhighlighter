@@ -1,8 +1,3 @@
-from .highlight import Highlight, PairedHighlight
+from .highlight import Highlight
 from .molhighlighter import MolHighlighter
-from .pairedmolhighlighter import PairedMolHighlighter
 from ._version import __version__
-
-# alias
-PMH = PairedMolHighlighter
-MH = MolHighlighter

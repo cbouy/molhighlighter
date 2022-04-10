@@ -1,18 +1,19 @@
 from rdkit import Chem
 
 class Highlight:
-    def __init__(self, indices, color=None, fill_ring=False):
+    def __init__(self, indices, substring=None, color=None, fill_ring=False):
         self.indices = indices
         self.color = color
         self.fill_ring = fill_ring
+        self.substring = substring
 
     @classmethod
-    def from_smarts(cls, mol, smarts, color=None, fill_ring=False):
+    def from_smarts(cls, mol, smarts, substring=None, color=None, fill_ring=False):
         qmol = Chem.MolFromSmarts(smarts)
         indices = mol.GetSubstructMatch(qmol)
         if not indices:
             raise ValueError(f"Not match found for {smarts!r}")
-        return cls(indices=indices, color=color, fill_ring=fill_ring)
+        return cls(indices=indices, substring=substring, color=color, fill_ring=fill_ring)
 
     @property
     def color(self):
@@ -39,16 +40,3 @@ class Highlight:
         """Returns an RGB tuple in the 0-1 range for RDKit"""
         color = self.color.lstrip("#")
         return tuple(int(color[i:i+2], 16)/255 for i in (0, 2, 4))
-
-
-class PairedHighlight(Highlight):
-    def __init__(self, substring, indices, color=None, fill_ring=False):
-        super().__init__(indices=indices, color=color, fill_ring=fill_ring)
-        self.substring = substring
-
-    @classmethod
-    def from_smarts(cls, mol, smarts, substring, color=None, fill_ring=False):
-        qmol = Chem.MolFromSmarts(smarts)
-        indices = mol.GetSubstructMatch(qmol)
-        return cls(substring=substring, indices=indices, color=color,
-                   fill_ring=fill_ring)
