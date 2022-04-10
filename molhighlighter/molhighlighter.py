@@ -2,6 +2,7 @@ from collections import namedtuple
 from rdkit import Chem, Geometry
 from rdkit.Chem import AllChem, Draw
 from .highlight import Highlight
+from .utils import sequential_palette, get_auto_palette
 try:
     from IPython.display import display_svg
     from ipywidgets import ColorPicker
@@ -49,6 +50,17 @@ class MolHighlighter:
             raise AttributeError(
                 "Please set the `highlights` attribute as a list of "
                 f"{self.highlight_cls.__name__}")
+
+        # automatic colors if not set
+        if all(h.color is None for h in self.highlights):
+            num_hl = len(self.highlights)
+            if num_hl > 5:
+                palette = get_auto_palette(num_hl)
+            else:
+                palette = sequential_palette
+            for highlight, color in zip(self.highlights, palette):
+                highlight.color = color
+
         # MolDrawOptions defaults
         opts = Draw.MolDrawOptions()
         if bw_palette:
