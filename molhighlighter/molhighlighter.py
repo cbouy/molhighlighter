@@ -47,8 +47,26 @@ class MolHighlighter:
         print("Click on the square to pick a color for the highlight")
         return ColorPicker(concise=False, value='#e36262')
 
-    def configure(self, size=(-1, -1), bw_palette=True, fill_rings=None,
-                  highlight_font=False, style=None, **moldrawoptions):
+    def configure(self, size=(-1, -1), black_font=True, fill_rings=None,
+        highlight_font=False, style=None, **moldrawoptions):
+        """Configure the highlights
+
+        Parameters
+        ----------
+        size : tuple[int]
+            Size of the molecule image. Use `(-1, -1)` for automatic sizing
+        black_font : bool
+            Use a black font for the molecule's atoms
+        fill_rings : bool or None
+            Fill highlighted rings. Leave to `None` to automatically fill
+            if rings matching the query were detected
+        highlight_font : bool
+            Color the label font instead of the label background
+        style : str or None
+            CSS style for the figure. Not used if label is not set
+        moldrawoptions
+            See rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
+        """
         # check for errors
         if not self.highlights:
             raise AttributeError("Please set the `highlights` attribute")
@@ -67,7 +85,7 @@ class MolHighlighter:
 
         # MolDrawOptions defaults
         opts = Draw.MolDrawOptions()
-        if bw_palette:
+        if black_font:
             opts.useBWAtomPalette()
         opts.scalingFactor = 28
         opts.highlightBondWidthMultiplier = 16

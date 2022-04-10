@@ -2,7 +2,7 @@
 
 [![Powered by RDKit](https://img.shields.io/badge/Powered%20by-RDKit-3838ff.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAFVBMVEXc3NwUFP8UPP9kZP+MjP+0tP////9ZXZotAAAAAXRSTlMAQObYZgAAAAFiS0dEBmFmuH0AAAAHdElNRQfmAwsPGi+MyC9RAAAAQElEQVQI12NgQABGQUEBMENISUkRLKBsbGwEEhIyBgJFsICLC0iIUdnExcUZwnANQWfApKCK4doRBsKtQFgKAQC5Ww1JEHSEkAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMi0wMy0xMVQxNToyNjo0NyswMDowMDzr2J4AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjItMDMtMTFUMTU6MjY6NDcrMDA6MDBNtmAiAAAAAElFTkSuQmCC)](https://www.rdkit.org/)
 
-Fancy colored substructure highlights with labels
+Simple interface for generating multicolor substructure highlights. Can be paired with highlighting of text in a label.
 
 <p float="left">
     <img alt="Paired highlight of IUPAC name" height="200" src="assets/iupac_highlight.png"/>
@@ -11,7 +11,7 @@ Fancy colored substructure highlights with labels
 
 ## 🐍 Installation
 
-Make sure RDKit is installed, then:
+Make sure RDKit (version `>=2022.03.1`) is installed, then:
 
 ```python
 pip install git+https://github.com/cbouy/molhighlighter.git
@@ -49,7 +49,7 @@ highlights = [
     mh.Highlight.from_smarts(mol, "N=N", "diazenyl"),
     mh.Highlight.from_smarts(mol, "c1ccccc1O", "phenol", fill_ring=True),
 ]
-mh.MolHighlighter(mol, highlights, name)
+mh.MolHighlighter(mol, highlights, label=name)
 ```
 
 See the [demo notebook](demo.ipynb) for more info
