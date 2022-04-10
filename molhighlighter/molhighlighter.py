@@ -1,9 +1,12 @@
 from collections import namedtuple
 from rdkit import Chem, Geometry
 from rdkit.Chem import AllChem, Draw
-from IPython.display import display_svg
-from ipywidgets import ColorPicker
 from .highlight import Highlight
+try:
+    from IPython.display import display_svg
+    from ipywidgets import ColorPicker
+except ImportError:
+    pass
 
 
 Substitution = namedtuple("Substitution", ["content", "start", "end"])

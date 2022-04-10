@@ -1,8 +1,11 @@
 import warnings
 import uuid
-from IPython.display import display_html, Javascript
 from .molhighlighter import Substitution, MolHighlighter
 from .highlight import LabelledHighlight
+try:
+    from IPython.display import display_html, Javascript
+except ImportError:
+    pass
 
 
 class LabelledMolHighlighter(MolHighlighter):
