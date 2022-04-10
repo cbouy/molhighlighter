@@ -21,14 +21,8 @@ class MolHighlighter:
         self.highlights = highlights
         self.label = label
         self._div_id = f"mol_canvas_{uuid.uuid1().hex}"
-        self.style = "text-align: center; display: inline-block;"
-        self.html_template = """
-        <div id="{div_id}" style="{style}">
-            <div style="font-size: 12pt; margin: 10px 0;">{label}</div>
-            <div>{svg}</div>
-        </div>"""
         self._is_configured = False
-    
+
     def __repr__(self):
         mol = Chem.MolToSmiles(self.mol)
         label = self.label
@@ -54,9 +48,7 @@ class MolHighlighter:
         return ColorPicker(concise=False, value='#e36262')
 
     def configure(self, size=(-1, -1), bw_palette=True, fill_rings=None,
-                  style="background-color: null",
-                  label_style="padding: 4px 1px; border-radius: 6px; background-color:",
-                  **moldrawoptions):
+                  highlight_font=False, style=None, **moldrawoptions):
         # check for errors
         if not self.highlights:
             raise AttributeError("Please set the `highlights` attribute")
@@ -94,9 +86,28 @@ class MolHighlighter:
             self.fill_rings = fill_rings
         
         # label
+        self.highlight_font = highlight_font
+
+        # html template
         if style:
-            self.style += style
-        self.label_style = label_style
+            self._style = style
+        else:
+            self._style = ""
+        self.html_template = """
+        <div id="{div_id}" style="text-align: center; display: inline-block; {style}">
+            <style>
+                .mhl-highlight {{
+                    padding: 1px 1px;
+                    border-radius: 6px;
+                }}
+                .mhl-label {{
+                    font-size: 12pt;
+                    margin: 6px 0;
+                }}
+            </style>
+            <div class="mhl-label">{label}</div>
+            <div>{svg}</div>
+        </div>"""
         self._is_configured = True
 
     @requires_config
@@ -163,6 +174,13 @@ class MolHighlighter:
             return self._find_substring(substring, index + len(substring), indices)
         return index
 
+    def _get_span_element(self, text, color):
+        if self.highlight_font:
+            return f'<span style="color: {color}">{text}</span>'
+        else:
+            return ( '<span class="mhl-highlight" '
+                    f'style="background-color: {color}">{text}</span>')
+
     @requires_config
     def generate_label(self):
         """Generate an HTML string of the label with highlights"""
@@ -180,7 +198,7 @@ class MolHighlighter:
                 continue
             end = start + size
             # create substitution string
-            sub = f'<span style="{self.label_style}{highlight.color}">{substring}</span>'
+            sub = self._get_span_element(substring, highlight.color)
             substitutions.append(Substitution(sub, start, end))
             starts.append(start)
         # sort substitutions by order of appearance in label
@@ -200,7 +218,7 @@ class MolHighlighter:
         """Generate the HTML for the labelled figure"""
         label = self.generate_label()
         svg = self.generate_mol_svg()
-        return self.html_template.format(div_id=self._div_id, style=self.style,
+        return self.html_template.format(div_id=self._div_id, style=self._style,
                                          label=label, svg=svg)
 
     @requires_config
