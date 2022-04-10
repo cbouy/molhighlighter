@@ -44,8 +44,8 @@ class MolHighlighter:
                   **moldrawoptions):
         if not self.highlights:
             raise AttributeError(
-                f"Please set the highlights ({self.highlight_cls.__name__}"
-                ".highlights) first")
+                "Please set the `highlights` attribute as a list of "
+                f"{self.highlight_cls.__name__}")
         # MolDrawOptions defaults
         opts = Draw.MolDrawOptions()
         if bw_palette:
