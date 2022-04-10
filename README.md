@@ -32,7 +32,7 @@ highlights = [
     mh.Highlight.from_smarts(mol, "N=N"),
     mh.Highlight.from_smarts(mol, "c1ccccc1O", fill_ring=True),
 ]
-mh.MolHighlighter(mol, highlights).display()
+mh.MolHighlighter(mol, highlights)
 ```
 
 ### Substructure highlight paired with label highlighting
@@ -49,7 +49,7 @@ highlights = [
     mh.Highlight.from_smarts(mol, "N=N", "diazenyl"),
     mh.Highlight.from_smarts(mol, "c1ccccc1O", "phenol", fill_ring=True),
 ]
-mh.MolHighlighter(mol, highlights, name).display()
+mh.MolHighlighter(mol, highlights, name)
 ```
 
 See the [demo notebook](demo.ipynb) for more info

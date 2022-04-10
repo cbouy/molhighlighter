@@ -3,9 +3,16 @@ from rdkit import Chem
 class Highlight:
     def __init__(self, indices, substring=None, color=None, fill_ring=False):
         self.indices = indices
+        self.substring = substring
         self.color = color
         self.fill_ring = fill_ring
-        self.substring = substring
+
+    def __repr__(self):
+        ix = self.indices
+        substring = self.substring
+        color = self.color
+        fill_ring = self.fill_ring
+        return f'<Highlight({ix=}, {substring=}, {color=}, {fill_ring=})>'
 
     @classmethod
     def from_smarts(cls, mol, smarts, substring=None, color=None, fill_ring=False):

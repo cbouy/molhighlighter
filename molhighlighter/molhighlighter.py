@@ -42,6 +42,12 @@ class MolHighlighter:
         </div>"""
         self._is_configured = False
     
+    def __repr__(self):
+        mol = Chem.MolToSmiles(self.mol)
+        label = self.label
+        highlights = self.highlights
+        return f'MolHighlighter({mol=}, {label=}, {highlights=})'
+    
     def hint(self):
         """Displays the molecule annotated with atom indices and a color picker
         to help setting up the Highlight objects"""
@@ -259,3 +265,10 @@ class MolHighlighter:
         svg = self.generate_mol_svg()
         with open(path, "w") as f:
             f.write(svg)
+
+    def _repr_html_(self):
+        if self.label:
+            return self.generate_html()
+
+    def _repr_svg_(self):
+        return self.generate_mol_svg()
