@@ -11,6 +11,8 @@ Fancy colored substructure highlights with labels
 
 ## 🐍 Installation
 
+Make sure RDKit is installed, then:
+
 ```python
 pip install git+https://github.com/cbouy/molhighlighter.git
 ```
@@ -21,33 +23,33 @@ pip install git+https://github.com/cbouy/molhighlighter.git
 
 ```python
 from rdkit import Chem
-from molhighlighter import MH, Highlight
+import molhighlighter as mh
 
 mol = Chem.MolFromSmiles("C1=CC(=CC=C1N=NC2=CC=C(C=C2)Br)O")
 
 highlights = [
-    Highlight.from_smarts(mol, "c1ccccc1Br", "#93e467", fill_ring=True),
-    Highlight.from_smarts(mol, "N=N", "#e36262"),
-    Highlight.from_smarts(mol, "c1ccccc1O", "#62d4e3", True),
+    mh.Highlight.from_smarts(mol, "c1ccccc1Br", fill_ring=True),
+    mh.Highlight.from_smarts(mol, "N=N"),
+    mh.Highlight.from_smarts(mol, "c1ccccc1O", fill_ring=True),
 ]
-MH(mol, highlights).display()
+mh.MolHighlighter(mol, highlights).display()
 ```
 
 ### Substructure highlight paired with label highlighting
 
 ```python
 from rdkit import Chem
-from molhighlighter import LMH, LabelledHighlight
+import molhighlighter as mh
 
 mol = Chem.MolFromSmiles("C1=CC(=CC=C1N=NC2=CC=C(C=C2)Br)O")
 name = "4-[(4-bromophenyl)diazenyl]phenol"
 
 highlights = [
-    Highlight.from_smarts(mol, "c1ccccc1Br", "#93e467", fill_ring=True),
-    Highlight.from_smarts(mol, "N=N", "#e36262"),
-    Highlight.from_smarts(mol, "c1ccccc1O", "#62d4e3", True),
+    mh.PairedHighlight.from_smarts(mol, "c1ccccc1Br", "bromophenyl", fill_ring=True),
+    mh.PairedHighlight.from_smarts(mol, "N=N", "diazenyl"),
+    mh.PairedHighlight.from_smarts(mol, "c1ccccc1O", "phenol", fill_ring=True),
 ]
-LMH(name, mol, highlights).display()
+mh.PairedMolHighlighter(name, mol, highlights).display()
 ```
 
 See the [demo notebook](demo.ipynb) for more info
