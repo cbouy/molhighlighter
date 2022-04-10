@@ -1,26 +1,26 @@
 from rdkit import Chem
 
 class Highlight:
-    def __init__(self, indices, substring=None, color=None, fill_ring=False):
+    def __init__(self, indices, text=None, color=None, fill_ring=False):
         self.indices = indices
-        self.substring = substring
+        self.text = text
         self.color = color
         self.fill_ring = fill_ring
 
     def __repr__(self):
         ix = self.indices
-        substring = self.substring
+        text = self.text
         color = self.color
         fill_ring = self.fill_ring
-        return f'<Highlight({ix=}, {substring=}, {color=}, {fill_ring=})>'
+        return f'<Highlight({ix=}, {text=}, {color=}, {fill_ring=})>'
 
     @classmethod
-    def from_smarts(cls, mol, smarts, substring=None, color=None, fill_ring=False):
+    def from_smarts(cls, mol, smarts, text=None, color=None, fill_ring=False):
         qmol = Chem.MolFromSmarts(smarts)
         indices = mol.GetSubstructMatch(qmol)
         if not indices:
             raise ValueError(f"Not match found for {smarts!r}")
-        return cls(indices=indices, substring=substring, color=color, fill_ring=fill_ring)
+        return cls(indices=indices, text=text, color=color, fill_ring=fill_ring)
 
     @property
     def color(self):

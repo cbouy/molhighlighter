@@ -52,8 +52,8 @@ class MolHighlighter:
         # check for errors
         if not self.highlights:
             raise AttributeError("Please set the `highlights` attribute")
-        if self.label and any(h.substring is None for h in self.highlights):
-            raise ValueError("Cannot use empty highlight substring if label is set")
+        if self.label and any(h.text is None for h in self.highlights):
+            raise ValueError("Cannot use empty highlight text if label is set")
 
         # automatic colors if not set
         if all(h.color is None for h in self.highlights):
@@ -168,10 +168,10 @@ class MolHighlighter:
         d2d.FinishDrawing()
         return d2d.GetDrawingText()
 
-    def _find_substring(self, substring, start, indices):
-        index = self.label.find(substring, start)
+    def _find_text(self, text, start, indices):
+        index = self.label.find(text, start)
         if index in indices:
-            return self._find_substring(substring, index + len(substring), indices)
+            return self._find_text(text, index + len(text), indices)
         return index
 
     def _get_span_element(self, text, color):
@@ -184,28 +184,28 @@ class MolHighlighter:
     @requires_config
     def generate_label(self):
         """Generate an HTML string of the label with highlights"""
-        # sort PairedHighlights with longer (more specific) substrings first
+        # sort Highlights with longer (more specific) texts first
         highlights = sorted(self.highlights, reverse=True,
-                            key=lambda highlight: len(highlight.substring))
+                            key=lambda highlight: len(highlight.text))
         substitutions, starts = [], []
         for highlight in highlights:
-            substring = highlight.substring
-            size = len(substring)
-            # find start index of substring in label
-            start = self._find_substring(substring, 0, starts)
+            text = highlight.text
+            size = len(text)
+            # find start index of text in label
+            start = self._find_text(text, 0, starts)
             if start < 0:
                 warnings.warn(f"No match found in label for {highlight}")
                 continue
             end = start + size
             # create substitution string
-            sub = self._get_span_element(substring, highlight.color)
+            sub = self._get_span_element(text, highlight.color)
             substitutions.append(Substitution(sub, start, end))
             starts.append(start)
         # sort substitutions by order of appearance in label
         substitutions.sort(key=lambda x: x.start)
         n = 0
         label = self.label
-        # replace substrings by substitutions
+        # replace texts by substitutions
         for sub, start, end in substitutions:
             start += n
             end += n
