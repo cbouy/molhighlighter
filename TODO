@@ -1,6 +1,0 @@
-- make MolHighlighter class and Highlight namedtuple (Mapping without substring)
-- LabelledMolHighlighter inherits from MolHighlighter
-- reorganize as module
-- add setup.py and setup.cfg
-- add readme
-- publish on github
