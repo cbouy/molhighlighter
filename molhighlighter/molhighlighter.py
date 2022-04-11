@@ -189,7 +189,7 @@ class MolHighlighter:
     def _find_text(self, text, start, indices):
         index = self.label.find(text, start)
         if index in indices:
-            return self._find_text(text, index + len(text), indices)
+            return self._find_text(text, index + 1, indices)
         return index
 
     def _get_span_element(self, text, color):
@@ -218,7 +218,7 @@ class MolHighlighter:
             # create substitution string
             sub = self._get_span_element(text, highlight.color)
             substitutions.append(Substitution(sub, start, end))
-            starts.append(start)
+            starts.extend(range(start, end))
         # sort substitutions by order of appearance in label
         substitutions.sort(key=lambda x: x.start)
         n = 0
