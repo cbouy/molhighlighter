@@ -28,9 +28,9 @@ import molhighlighter as mh
 mol = Chem.MolFromSmiles("C1=CC(=CC=C1N=NC2=CC=C(C=C2)Br)O")
 
 highlights = [
-    mh.Highlight.from_smarts(mol, "c1ccccc1Br", fill_ring=True),
-    mh.Highlight.from_smarts(mol, "N=N"),
-    mh.Highlight.from_smarts(mol, "c1ccccc1O", fill_ring=True),
+    mh.Smarts(mol, "c1ccccc1Br", fill_ring=True),
+    mh.Smarts(mol, "N=N"),
+    mh.Smarts(mol, "c1ccccc1O", fill_ring=True),
 ]
 mh.MolHighlighter(mol, highlights)
 ```
@@ -45,9 +45,9 @@ mol = Chem.MolFromSmiles("C1=CC(=CC=C1N=NC2=CC=C(C=C2)Br)O")
 name = "4-[(4-bromophenyl)diazenyl]phenol"
 
 highlights = [
-    mh.Highlight.from_smarts(mol, "c1ccccc1Br", "bromophenyl", fill_ring=True),
-    mh.Highlight.from_smarts(mol, "N=N", "diazenyl"),
-    mh.Highlight.from_smarts(mol, "c1ccccc1O", "phenol", fill_ring=True),
+    mh.Smarts(mol, "c1ccccc1Br", "bromophenyl", fill_ring=True),
+    mh.Smarts(mol, "N=N", "diazenyl"),
+    mh.Smarts(mol, "c1ccccc1O", "phenol", fill_ring=True),
 ]
 mh.MolHighlighter(mol, highlights, label=name)
 ```
