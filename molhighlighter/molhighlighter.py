@@ -4,6 +4,7 @@ from rdkit import Chem, Geometry
 from rdkit.Chem import AllChem, Draw
 from .utils import (Substitution, requires_config,
                     sequential_palette, get_auto_palette)
+from .highlight import Highlight
 try:
     from IPython.display import display_svg, display_html, Javascript
     from ipywidgets import ColorPicker
@@ -73,15 +74,41 @@ class MolHighlighter:
         if self.label and any(h.text is None for h in self.highlights):
             raise ValueError("Cannot use empty highlight text if label is set")
 
+        # extend highlights if indices is nested list
+        extended = []
+        for h in self.highlights:
+            if isinstance(h.indices[0], (list, tuple)) and not h.same_color:
+                ext = [Highlight(ix, h.text, h.color, h.fill_ring)
+                       for ix in h.indices]
+                extended.extend(ext)
+            else:
+                extended.append(h)
+        self.highlights = extended
+
         # automatic colors if not set
-        if all(h.color is None for h in self.highlights):
+        if any(h.color is None for h in self.highlights):
             num_hl = len(self.highlights)
             if num_hl > 5:
                 palette = get_auto_palette(num_hl)
             else:
                 palette = sequential_palette
-            for highlight, color in zip(self.highlights, palette):
-                highlight.color = color
+            for h, color in zip(self.highlights, palette):
+                h.color = h.color if h.color else color
+
+        # extend highlights if indices is nested list or text is list
+        extended = []
+        for h in self.highlights:
+            if isinstance(h.indices[0], (list, tuple)):
+                ext = [Highlight(ix, h.text, h.color, h.fill_ring)
+                       for ix in h.indices]
+                extended.extend(ext)
+            elif isinstance(h.text, (list, tuple)):
+                ext = [Highlight(h.indices, txt, h.color, h.fill_ring)
+                       for txt in h.text]
+                extended.extend(ext)
+            else:
+                extended.append(h)
+        self.highlights = extended
 
         # MolDrawOptions defaults
         opts = Draw.MolDrawOptions()
@@ -212,7 +239,7 @@ class MolHighlighter:
             # find start index of text in label
             start = self._find_text(text, 0, starts)
             if start < 0:
-                warnings.warn(f"No match found in label for {highlight}")
+                warnings.warn(f"{highlight.text!r} unmatched or already found in label")
                 continue
             end = start + size
             # create substitution string
