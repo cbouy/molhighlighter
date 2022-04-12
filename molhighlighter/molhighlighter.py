@@ -213,10 +213,10 @@ class MolHighlighter:
         d2d.FinishDrawing()
         return d2d.GetDrawingText()
 
-    def _find_text(self, text, start, indices):
+    def _find_text(self, text, start, occupied):
         index = self.label.find(text, start)
-        if index in indices:
-            return self._find_text(text, index + 1, indices)
+        if index in occupied:
+            return self._find_text(text, index + len(text), occupied)
         return index
 
     def _get_span_element(self, text, color):
@@ -232,12 +232,13 @@ class MolHighlighter:
         # sort Highlights with longer (more specific) texts first
         highlights = sorted(self.highlights, reverse=True,
                             key=lambda highlight: len(highlight.text))
-        substitutions, starts = [], []
+        substitutions = []
+        highlighted_positions = set()
         for highlight in highlights:
             text = highlight.text
             size = len(text)
             # find start index of text in label
-            start = self._find_text(text, 0, starts)
+            start = self._find_text(text, 0, highlighted_positions)
             if start < 0:
                 warnings.warn(f"{highlight.text!r} unmatched or already found in label")
                 continue
@@ -245,7 +246,7 @@ class MolHighlighter:
             # create substitution string
             sub = self._get_span_element(text, highlight.color)
             substitutions.append(Substitution(sub, start, end))
-            starts.extend(range(start, end))
+            highlighted_positions.update(range(start, end))
         # sort substitutions by order of appearance in label
         substitutions.sort(key=lambda x: x.start)
         n = 0
